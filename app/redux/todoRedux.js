@@ -17,7 +17,7 @@ export const actionCreators = {
   },
   removeCompleted: (item) => {
     return {type: types.REMOVE_COMPLETED, payload: item}
-  },
+  }
 }
 
 const initialState = {

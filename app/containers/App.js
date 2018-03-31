@@ -1,78 +1,42 @@
-import React, { Component } from 'react'
-import { View, StyleSheet } from 'react-native'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types';
+import { Navigation } from 'react-native-navigation';
+import { Provider } from 'react-redux';
 
-import { actionCreators } from '../redux/todoRedux'
-import Title from '../components/Title'
-import Input from '../components/Input'
-import List from '../components/List'
-import Footer from '../components/Footer'
+import TodoListScreen from '../screens/TodoListScreen';
+import TodoDetail from '../screens/TodoDetail';
+import AddTodo from '../screens/AddTodo';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'space-between'
-  },
-  divider: {
-    height: 1,
-    backgroundColor: 'whitesmoke',
-  }
-})
+import configureStore from '../store/configureStore'
+import * as screen from '../constants/ScreenNames'
 
-const mapStateToProps = (state) => ({
-  items: state.items,
-})
+const store = configureStore().store
+const persistor = configureStore().persistor
 
-class App extends Component {
+const navigatorStyle = {
+	statusBarColor: 'black',
+	statusBarTextColorScheme: 'light',
+	navigationBarColor: 'black',
+	navBarBackgroundColor: '#0a0a0a',
+	navBarTextColor: 'white',
+	navBarButtonColor: 'white',
+	tabBarButtonColor: 'red',
+	tabBarSelectedButtonColor: 'red',
+	tabBarBackgroundColor: 'white',
+	topBarElevationShadowEnabled: false,
+	navBarHideOnScroll: false,
+	tabBarHidden: true,
+	drawUnderTabBar: true
+};
 
-  static propTypes = {
-    items: PropTypes.array.isRequired,
-    dispatch: PropTypes.func.isRequired,
-  }
+export default () => {
+  Navigation.registerComponent(screen.TODO_LIST_SCREEN, () => TodoListScreen, store, Provider);
+  Navigation.registerComponent(screen.TODO_DETAIL_SCREEN, () => TodoDetail, store, Provider);
+  Navigation.registerComponent(screen.TODO_ADD_SCREEN, () => AddTodo, store, Provider);
 
-  addItem = (item) => {
-    const {dispatch} = this.props
-    dispatch(actionCreators.addItem(item))
-  }
-
-  removeItem = (index) => {
-    const {dispatch} = this.props
-    dispatch(actionCreators.removeItem(index))
-  }
-
-  toggleItemCompleted = (index) => {
-    const {dispatch} = this.props
-    dispatch(actionCreators.toggleItemCompleted(index))
-  }
-
-  removeCompleted = () => {
-    const {dispatch} = this.props
-    dispatch(actionCreators.removeCompleted())
-  }
-
-    render() {
-
-      const {items} = this.props
-
-      return (
-        <View style={styles.container}>
-        <Title> Todo List </Title>
-        <Input
-          placeholder={'Enter an item!'}
-          onSubmit={this.addItem}
-        />
-        <View style={styles.divider}/>
-        <List
-          items={items}
-          onRemoveItem={this.removeItem}
-          onToggleItemCompleted={this.toggleItemCompleted}
-        />
-        <View style={styles.divider} />
-        <Footer onRemoveCompleted={this.removeCompleted} />
-      </View>
-      );
+  Navigation.startSingleScreenApp({
+    screen: {
+      screen: screen.TODO_LIST_SCREEN,
+      title: 'Todos',
+      navigatorStyle
     }
-  }
-
-export default connect(mapStateToProps)(App)
+  });
+};

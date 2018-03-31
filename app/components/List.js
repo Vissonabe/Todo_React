@@ -40,15 +40,17 @@ export default class List extends Component {
         items: PropTypes.array.isRequired,
         onRemoveItem: PropTypes.func.isRequired,
         onToggleItemCompleted: PropTypes.func.isRequired,
+        onTodoClick: PropTypes.func.isRequired
       }
 
       renderItem = (item, i) => {
-        const {onToggleItemCompleted, onRemoveItem} = this.props
+        const {onToggleItemCompleted, onRemoveItem, onTodoClick} = this.props
         const itemStyle = item.completed ? [styles.item, styles.completed] : styles.item
         const strikeStyle = item.completed ?  styles.itemCompleted : []
     
         return (
-          <View key={i} style={itemStyle}>
+          <TouchableOpacity key={i} onPress={() => onTodoClick(item)}>
+          <View style={itemStyle}>
             <Text style={strikeStyle}> {item.label} </Text>
             <View style={styles.rightSection}>
               <Checkbox
@@ -60,6 +62,7 @@ export default class List extends Component {
               </TouchableOpacity>
             </View>
           </View>
+          </TouchableOpacity>
         )
       }
 
